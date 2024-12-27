@@ -89,7 +89,6 @@ namespace BlgFnd
                         "WHERE poe.PlaneDate = @date " +
                         "GROUP BY e.name, e.description, poe.PlaneDate " +
                         "ORDER BY e.name;";
-
                     try
                     {
                         using (var command = new NpgsqlCommand(query, connection))
@@ -140,13 +139,6 @@ namespace BlgFnd
             MainWindow mainWindow = new MainWindow();
             this.Close();
             mainWindow.Show();
-        }
-
-        private void SqlB_Click(object sender, RoutedEventArgs e) //создать план мероприятий
-        {
-            NewPlanOfEventWindow newPlanOfEventWindow = new NewPlanOfEventWindow();
-            this.Close();
-            newPlanOfEventWindow.Show();
         }
     }
 }
