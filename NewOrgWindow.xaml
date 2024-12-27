@@ -1,0 +1,18 @@
+﻿<Window x:Class="BlgFnd.NewOrgWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BlgFnd"
+        mc:Ignorable="d"
+        Title="Новая организация" Height="150" Width="350" Background="#FF5ABEFC">
+    <Grid>
+        <Label Content="Навзание:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,15,0,0"/>
+        <TextBox x:Name="NameOrgTB" Width="200" Height="20" VerticalAlignment="Top"
+                 HorizontalAlignment="Left" Margin="110,15,0,0"/>
+        <Button Content="Добавить" HorizontalAlignment="Center" VerticalAlignment="Top" 
+                Margin="0,50,0,0" Width="100" Height="30" Click="AddB_Click"/>
+        <Button Content="Назад" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
+                Width="100" Height="20" Margin="15" Click="BackB_Click" />
+    </Grid>
+</Window>

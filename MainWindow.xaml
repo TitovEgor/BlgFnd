@@ -1,0 +1,18 @@
+﻿<Window x:Class="BlgFnd.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BlgFnd"
+        mc:Ignorable="d"
+        Title="Меню" Height="320" Width="250">
+    <Grid>
+        <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="20">
+            <Button Content="Волонтеры" Width="150" Height="30" Click="VolonterButton_Click" Margin="10"/>
+            <Button Content="Мероприятия" Width="150" Height="30" Click="EventButton_Click" Margin="10" />
+            <Button Content="Пожертвования" Width="150" Height="30" Click="DonationButton_Click" Margin="10" />
+            <Button Content="Изменить пароль" Width="150" Height="30" Click="EditPassButton_Click" Margin="10" />            
+            <Button Content="Меню администратора" Width="150" Height="30" Click="AdminButton_Click" Margin="10" />         
+        </StackPanel>
+    </Grid>
+</Window>
