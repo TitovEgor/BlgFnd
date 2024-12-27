@@ -124,17 +124,15 @@ namespace BlgFnd
                 System.Windows.MessageBox.Show("Выберите дату для поиска.", "Предупреждение");
             }
         }
-
+        private void dickp_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Search();
+        }
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             NewEventWindow newEventWindow = new NewEventWindow();
             this.Close();
             newEventWindow.Show();
-        }
-
-        private void SearchB_Click(object sender, RoutedEventArgs e) // найти план мероприятий на указанную дату
-        {
-            Search();
         }
 
         private void BackB_Click(object sender, RoutedEventArgs e) //вернуться в меню
