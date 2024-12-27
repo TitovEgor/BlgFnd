@@ -25,17 +25,8 @@
                             HorizontalAlignment="Left" FontSize="14"
                             Margin="150,205,0,0" VerticalAlignment="Top"
                             Width="250" Height="30"/>
-        <!-- ComboBox для выбора плана -->
-        <ComboBox Name="PlaneOfEventCB" 
-                  HorizontalAlignment="Left" 
-                  Margin="150,250,0,0" VerticalAlignment="Top"
-                  Width="250" Height="30" FontSize="14" />
-        <TextBox HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"
-                 Margin="25,0,0,90" VerticalAlignment="Bottom"
-                 Width="285" Height="80" Background="{x:Null}"
-                 Text="Убедитесь, что вы создали мероприятие, прежде чем попытаетесь добавить на него волонтера" FontSize="15" Foreground="#FF0022FF"/>
         <Button Content="Добавить" HorizontalAlignment="Right"
-                Margin="0,0,20,100" VerticalAlignment="Bottom"
+                Margin="0,0,20,60" VerticalAlignment="Bottom"
                 Width="100" Height="40" FontSize="16"
                 Click="AddButton_Click"/>
         <Button x:Name="BackB" Content="Назад" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
@@ -48,5 +39,13 @@
         <Label Content="Время начала:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,160,0,0"/>
         <Label Content="Время окончания:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,205,0,0"/>
         <Label Content="Дата:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,250,0,0"/>
+        <ComboBox x:Name="SotridCB" HorizontalAlignment="Left" VerticalAlignment="Top" 
+            Margin="150,300,0,0" Width="250" Height="30" FontSize="14" />
+        <Label Content="Сотрудник:" HorizontalAlignment="Left" VerticalAlignment="Top"
+            Margin="15,300,0,0" Width="100"/>
+        <xckt:MaskedTextBox x:Name="DateTB" Mask="00/00/0000" 
+                            HorizontalAlignment="Left" 
+                            Margin="150,250,0,0" VerticalAlignment="Top"
+                            Width="250" Height="30" FontSize="14" MaxLength="8" />
     </Grid>
 </Window>

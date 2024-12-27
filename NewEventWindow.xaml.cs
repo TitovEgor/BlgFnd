@@ -14,7 +14,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Xml.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BlgFnd
 {
@@ -28,19 +27,18 @@ namespace BlgFnd
         {
             InitializeComponent();
             dbConnection = new DatabaseConnection();
-            LoadPlans();
+            LoadSotr();
         }
-        private void LoadPlans()
+        private void LoadSotr()
         {
-            PlaneOfEventCB.Items.Clear();
+            SotridCB.Items.Clear();
             try
             {
                 using (var connection = dbConnection.GetConnection())
                 {
                     connection.Open();
-
-                    // Запрос на получение плана на дату
-                    string query = "SELECT PlanID, PlaneDate FROM PlanOfEvent ";  //таблица PlanOdEvent с полями Planid и PlaneDate
+                    // Запрос на получение всех сотрудников
+                    string query = "SELECT Sotrid, fullname FROM Sotr WHERE login != 'adminkey'";  //  таблица sotr с полями id и fullname
                     using (var command = new NpgsqlCommand(query, connection))
                     {
                         try
@@ -49,20 +47,20 @@ namespace BlgFnd
                             {
                                 while (reader.Read())
                                 {
-                                    var Plane = new Plane
+                                    var Sotr = new Sotr
                                     {
                                         Id = reader.GetInt32(0),
-                                        Planedate = reader.GetDateTime(1)
+                                        Fullname = reader.GetString(1)
                                     };
 
                                     // Добавляем сотрудника в ComboBox
-                                    PlaneOfEventCB.Items.Add(Plane);
+                                    SotridCB.Items.Add(Sotr);
                                 }
                             }
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show(ex.Message, "Ошибка при загрузке");
+                            MessageBox.Show(ex.Message, "Ошибка загрузке сотрудников");
                         }
                     }
                 }
@@ -70,6 +68,16 @@ namespace BlgFnd
             catch (Exception ex2)
             {
                 MessageBox.Show(ex2.Message, "Ошибка загрузки сотрудников");
+            }
+        }
+        public class Sotr
+        {
+            public int Id { get; set; }
+            public string Fullname { get; set; }
+
+            public override string ToString()
+            {
+                return Fullname;  // Это отображаемое значение в ComboBox
             }
         }
         public class Plane
@@ -84,7 +92,7 @@ namespace BlgFnd
         }
         public void CheckUnik()
         {
-            if (DateTime.TryParse(PlaneOfEventCB.Text, out DateTime parsedDate))
+            if (DateTime.TryParse(DateTB.Text, out DateTime parsedDate))
             {
                 using (var connection = dbConnection.GetConnection())
                 {
@@ -112,8 +120,16 @@ namespace BlgFnd
                                 {
                                     try
                                     {
-                                        command.ExecuteNonQuery();
-                                        MessageBox.Show("В это время уже проводится мероприятие", "Ошибка!");
+                                        DialogResult result = MessageBox.Show("В это время уже проводится мероприятие. Хотите продолжить?", "Ошибка!", MessageBoxButton.YesNo);
+                                        if (result)
+                                        {
+                                            command.ExecuteNonQuery();
+                                            MessageBox.Show("Данные успешно записаны.", "Информация");
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show("Операция отменена пользователем.", "Информация");
+                                        }
                                     }
                                     catch (Exception ex)
                                     {
@@ -124,6 +140,7 @@ namespace BlgFnd
                                 {
                                     CreateEvent();
                                 }
+
                             }
                             catch (Exception ex2)
                             {
@@ -137,17 +154,22 @@ namespace BlgFnd
         }
         public void CreateEvent()
         {
-            if (DateTime.TryParse(PlaneOfEventCB.Text, out DateTime parsedDate))
+            var selectedSotr = (Sotr)SotridCB.SelectedItem; 
+            if (selectedSotr == null)
+            {
+                MessageBox.Show("Пожалуйста, выберите сотрудника.", "Ошибка");
+                return;
+            }
+            if (DateTime.TryParse(DateTB.Text, out DateTime parsedDate))
             {
                 using (var connection = dbConnection.GetConnection())
                 {
                     connection.Open();
 
                     // Вставка нового мероприятия в таблицу event
-                    string qwery2 = "INSERT INTO event (name, description, time_start, time_end) " +
-                                    "VALUES (@name, @description, @time_start, @time_end) " +
+                    string qwery2 = "INSERT INTO event (name, description, time_start, time_end, sotrid) " +
+                                    "VALUES (@name, @description, @time_start, @time_end, @sotrid) " +
                                     "RETURNING eventid;";
-
                     try
                     {
                         using (var command = new NpgsqlCommand(qwery2, connection))
@@ -156,6 +178,7 @@ namespace BlgFnd
                             command.Parameters.AddWithValue("@description", DescriptionTB.Text);
                             command.Parameters.AddWithValue("@time_start", TimeSpan.Parse(time_startTB.Text));
                             command.Parameters.AddWithValue("@time_end", TimeSpan.Parse(time_endTB.Text));
+                            command.Parameters.AddWithValue("@sotrid", selectedSotr.Id);
 
                             // Получаем EventID для нового мероприятия
                             int eventId = (int)command.ExecuteScalar(); // Возвращаем значение последнего вставленного eventid
