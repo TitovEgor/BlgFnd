@@ -2,26 +2,37 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="План мероприятий" Height="400" Width="1500">
+        Title="План мероприятий" Height="400" Width="1000">
     <Grid Background="#FF5ABEFF">
         <Button x:Name="BackB" Content="Назад" HorizontalAlignment="Right" VerticalAlignment="Top" 
-                Width="100" Height="30" Margin="0,15,905,0" Click="BackB_Click" />
+                Width="100" Height="30" Margin="15" Click="BackB_Click" />
 
         <!-- DataGrid для вывода данных -->
         <DataGrid x:Name="DataGrid" Margin="10,60,10,10" Background="#FFAAFFAF" BorderThickness="0" IsReadOnly="True"/>
 
+        <!-- Маска ввода для даты -->
+
+        <!-- TextBlock для отображения ошибки, если данные не найдены -->
+        <TextBlock x:Name="faillTB" 
+                HorizontalAlignment="Center"
+                Text="На данную дату плана мероприятий нет"
+                VerticalAlignment="Center" Visibility="Hidden"
+                Width="600" TextAlignment="Center"
+                Height="50" FontSize="30" Background="{x:Null}"/>
+
         <!-- Кнопки -->
         <Button Content="Добавить мероприятие"
                 HorizontalAlignment="Left"
-                Margin="35,15,0,0"
+                Margin="380,15,0,0"
                 VerticalAlignment="Top"
                 Width="160"
                 Height="30"
                 Click="AddButton_Click" IsCancel="True"/>
         <Button Content="Создать план мероприятий" HorizontalAlignment="Left"
-                Margin="230,15,0,0"
+                Margin="600,15,0,0"
                 VerticalAlignment="Top"
                 Width="170"
                 Height="30" Click="SqlB_Click"/>
+        <DatePicker x:Name="dickp" HorizontalAlignment="Left" Margin="15,15,0,0" VerticalAlignment="Top" Height="30" Width="300"/>
     </Grid>
 </Window>

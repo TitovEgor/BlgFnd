@@ -71,11 +71,70 @@ namespace BlgFnd
                 }
             }
         }
+        private void Search()
+        {
+            DateTime? selectedDate = dickp.SelectedDate; // Получаем дату из DatePicker
+
+            if (selectedDate.HasValue)
+            {
+                using (var connection = dbConnection.GetConnection())
+                {
+                    connection.Open();
+                    string query = "SELECT e.name AS название, e.description AS описание, array_to_string(array_agg(DISTINCT v.fullname), E'\n') AS Участники, poe.PlaneDate AS дата " +
+                        "FROM event e " +
+                        "LEFT JOIN eventvolonter ev ON e.eventid = ev.eventid " +
+                        "LEFT JOIN volonter v ON ev.volonterid = v.volid " +
+                        "LEFT JOIN  planevent pe ON ev.eventvolonterid = pe.eventvolonterid " +
+                        "LEFT JOIN planofevent poe ON pe.planid = poe.planid " +
+                        "WHERE poe.PlaneDate = @date " +
+                        "GROUP BY e.name, e.description, poe.PlaneDate " +
+                        "ORDER BY e.name;";
+
+                    try
+                    {
+                        using (var command = new NpgsqlCommand(query, connection))
+                        {
+                            command.Parameters.AddWithValue("@date", selectedDate.Value);
+                            using (var adapter = new NpgsqlDataAdapter(command))
+                            {
+                                DataTable dataTable = new DataTable();
+                                adapter.Fill(dataTable);
+
+                                if (dataTable.Rows.Count > 0)
+                                {
+                                    DataGrid.ItemsSource = dataTable.DefaultView;
+                                    faillTB.Visibility = Visibility.Hidden; // Скрыть сообщение об ошибке
+                                }
+                                else
+                                {
+                                    DataGrid.ItemsSource = null;
+                                    faillTB.Visibility = Visibility.Visible; // Показать сообщение об ошибке
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Windows.MessageBox.Show(ex.Message, "Ошибка!");
+                    }
+                }
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Выберите дату для поиска.", "Предупреждение", );
+            }
+        }
+
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             NewEventWindow newEventWindow = new NewEventWindow();
             this.Close();
             newEventWindow.Show();
+        }
+
+        private void SearchB_Click(object sender, RoutedEventArgs e) // найти план мероприятий на указанную дату
+        {
+            Search();
         }
 
         private void BackB_Click(object sender, RoutedEventArgs e) //вернуться в меню
