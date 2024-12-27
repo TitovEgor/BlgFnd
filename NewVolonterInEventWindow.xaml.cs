@@ -227,7 +227,7 @@ namespace BlgFnd
         }
         private void BackB_Click(object sender, RoutedEventArgs e)
         {
-            NewEventWindow newEventWindow = new NewEventWindow;
+            NewEventWindow newEventWindow = new NewEventWindow();
             this.Close();
             newEventWindow.Show();
         }
