@@ -10,7 +10,7 @@ namespace BlgFnd
     //Класс DatabaseConnection предназнначен для управления подключением к БД
     public class DatabaseConnection
     {
-        private string connectionString = "Server=localhost;Port=5432;Database=BlgFndDB;User Id=postgres;Password=123";
+        private string connectionString = "Server=localhost;Port=5432;Database=BlgFndDB2;User Id=postgres;Password=123";
 
         public NpgsqlConnection GetConnection()
         {
