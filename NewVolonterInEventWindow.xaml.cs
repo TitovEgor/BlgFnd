@@ -227,9 +227,9 @@ namespace BlgFnd
         }
         private void BackB_Click(object sender, RoutedEventArgs e)
         {
-            VolonterWindow volonterWindow = new VolonterWindow();
+            NewEventWindow newEventWindow = new NewEventWindow;
             this.Close();
-            volonterWindow.Show();
+            newEventWindow.Show();
         }
 
         private void AddB_Click(object sender, RoutedEventArgs e)
