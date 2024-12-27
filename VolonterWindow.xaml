@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BlgFnd"
         mc:Ignorable="d"
-        Title="Волонтеры" Height="500" Width="1000">
+        Title="Волонтеры" Height="400" Width="1000">
     <Grid Background="#FF5ABEFF">
         <DataGrid x:Name="DataGrid" Margin="350,15,15,10" Background="#FFAAFFAF" IsReadOnly="true"/>
         <TextBox x:Name="IdTB" FontSize="16"
@@ -14,12 +14,12 @@
                  Width="80" Height="30" Margin="78,15,0,0"/>
         <Button x:Name="BackB" Content="Назад" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
                 Width="100" Height="30" Margin="15,15,15,15" Click="BackB_Click"/>
-        <Button x:Name="AddVolB" Content="Добавить волонтера" HorizontalAlignment="Left" VerticalAlignment="Top" 
-                Width="150" Height="30" Margin="15,220,0,0" Click="AddB_Click"/>
-        <Button x:Name="UpdateVolB" Content="Обновить данные о волонтере" HorizontalAlignment="Left" 
+        <Button x:Name="AddVolB" Content="Добавить" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                Width="100" Height="30" Margin="15,220,0,0" Click="AddB_Click"/>
+        <Button x:Name="UpdateVolB" Content="Обновить данные" HorizontalAlignment="Left" 
                 VerticalAlignment="Top" Width="180" Height="30" Margin="15,280,0,0" Click="UpdateB_Click"/>
-        <Button x:Name="DeleteVolB" Content="Удалить волонтера" HorizontalAlignment="Left" VerticalAlignment="Top" 
-                Width="150" Height="30" Margin="15,340,0,0" Click="DeleteB_Click"/>
+        <Button x:Name="DeleteVolB" Content="Удалить" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                Width="100" Height="30" Margin="228,220,0,0" Click="DeleteB_Click"/>
         <Button x:Name="SearchVolB" Content="Найти" HorizontalAlignment="Left" VerticalAlignment="Top" 
                 Width="80" Height="30" Margin="250,15,0,0" Click="SearchVolB_Click"/>
         <!--TB для ввода названия мероприятия-->
