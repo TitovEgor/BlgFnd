@@ -121,7 +121,7 @@ namespace BlgFnd
             }
             else
             {
-                System.Windows.MessageBox.Show("Выберите дату для поиска.", "Предупреждение", );
+                System.Windows.MessageBox.Show("Выберите дату для поиска.", "Предупреждение");
             }
         }
 
