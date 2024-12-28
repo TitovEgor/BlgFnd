@@ -43,9 +43,9 @@ namespace BlgFnd
         }
         private void AdminButton_Click(object sender, RoutedEventArgs e)
         {
-            AdminWindow adminWindow = new AdminWindow();
+            NewSotrWindow newSotrWindow = new NewSotrWindow();
             this.Close();
-            adminWindow.Show();
+            newSotrWindow.Show();
         }
 
         private void DonationButton_Click(object sender, RoutedEventArgs e)

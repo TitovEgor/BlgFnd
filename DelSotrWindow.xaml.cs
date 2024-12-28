@@ -90,9 +90,9 @@ namespace BlgFnd
 
         private void BackB_Click(object sender, RoutedEventArgs e)
         {
-            AdminWindow adminWindow = new AdminWindow();
+            MainWindow mainWindow = new MainWindow();
             this.Close();
-            adminWindow.Show();
+            mainWindow.Show();
         }
     }
 }
