@@ -120,15 +120,18 @@ namespace BlgFnd
                                 {
                                     try
                                     {
-                                        DialogResult result = MessageBox.Show("В это время уже проводится мероприятие. Хотите продолжить?", "Ошибка!", MessageBoxButton.YesNo);
-                                        if (result)
+                                        MessageBoxResult result = MessageBox.Show("В это время уже проводится мероприятие. Хотите продолжить?",
+                                                                                "Внимание!", MessageBoxButton.YesNo);
+                                        switch (result)
                                         {
-                                            command.ExecuteNonQuery();
-                                            MessageBox.Show("Данные успешно записаны.", "Информация");
-                                        }
-                                        else
-                                        {
-                                            MessageBox.Show("Операция отменена пользователем.", "Информация");
+                                            case MessageBoxResult.Yes:
+                                                // Пользователь нажал кнопку «Да»
+                                                CreateEvent();
+                                                break;
+                                            case MessageBoxResult.No:
+                                                // Пользователь нажал кнопку «Нет»
+                                                MessageBox.Show("Операция отменена пользователем", "Информация");
+                                                break;
                                         }
                                     }
                                     catch (Exception ex)
@@ -179,34 +182,35 @@ namespace BlgFnd
                             command.Parameters.AddWithValue("@time_start", TimeSpan.Parse(time_startTB.Text));
                             command.Parameters.AddWithValue("@time_end", TimeSpan.Parse(time_endTB.Text));
                             command.Parameters.AddWithValue("@sotrid", selectedSotr.Id);
-
                             // Получаем EventID для нового мероприятия
                             int eventId = (int)command.ExecuteScalar(); // Возвращаем значение последнего вставленного eventid
-
                             // Вставка в таблицу eventvolonter
                             string insertEventVolonterQuery = "INSERT INTO eventvolonter (eventid) VALUES (@eventid) " +
                                                               "RETURNING eventvolonterid;";
-                            using (var volonterCommand = new NpgsqlCommand(insertEventVolonterQuery, connection))
+                            using (var command2 = new NpgsqlCommand(insertEventVolonterQuery, connection))
                             {
-                                volonterCommand.Parameters.AddWithValue("@eventid", eventId);
-
+                                command2.Parameters.AddWithValue("@eventid", eventId);
                                 // Получаем EventVolonterID для вставки в таблицу planevent
-                                int eventVolonterId = (int)volonterCommand.ExecuteScalar();
-
-                                // Обновление таблицы planevent с добавлением EventVolonterID
-                                string updatePlaneventQuery = "UPDATE planevent " +
-                                                              "SET EventVolonterID = @eventVolonterId " +
-                                                              "WHERE PlanID = (SELECT PlanID FROM planofevent WHERE PlaneDate = @date LIMIT 1);";
-
-                                using (var updateCommand = new NpgsqlCommand(updatePlaneventQuery, connection))
+                                int eventVolonterId = (int)command2.ExecuteScalar();
+                                // Добавление списка волонтеров (EventVolonter) в план (planevent)
+                                string addEventVolonterToPlane = "INSERT INTO planofevent (plandate) VALUES (@date) ON CONFLICT DO NOTHING; " +
+                                                                 "UPDATE planevent " +
+                                                                 "SET EventVolonterID = @eventVolonterId " +
+                                                                 "WHERE PlanID = (SELECT PlanID FROM planofevent WHERE PlaneDate = @date LIMIT 1);";
+                                try
                                 {
-                                    updateCommand.Parameters.AddWithValue("@eventVolonterId", eventVolonterId);
-                                    updateCommand.Parameters.AddWithValue("@date", parsedDate);
-
-                                    updateCommand.ExecuteNonQuery(); // Обновляем planevent
+                                    using (var command4 = new NpgsqlCommand(addEventVolonterToPlane, connection))
+                                    {
+                                        command4.Parameters.AddWithValue("@eventVolonterId", eventVolonterId);
+                                        command4.Parameters.AddWithValue("@date", parsedDate);
+                                        command4.ExecuteNonQuery(); // Обновляем planevent
+                                    }
                                 }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show(ex.Message);
+                                }                                
                             }
-
                             MessageBox.Show("Мероприятие добавлено успешно!", "Успех!");
                         }
                     }
@@ -221,14 +225,12 @@ namespace BlgFnd
         {
             CheckUnik();
         }
-
         private void BackB_Click(object sender, RoutedEventArgs e)
         {
             EventWindow eventWindow = new EventWindow();
             this.Close();
             eventWindow.Show();
         }
-
         private void AddVolInEventButton_Click(object sender, RoutedEventArgs e)
         {
             NewVolonterInEventWindow newVolonterInEventWindow = new NewVolonterInEventWindow();

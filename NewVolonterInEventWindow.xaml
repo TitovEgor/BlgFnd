@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BlgFnd"
         mc:Ignorable="d"
-        Title="добавить волонтера на мероприятие" Height="300" Width="600">
+        Title="добавить волонтера на мероприятие" Height="300" Width="500">
     <Grid Background="#FF5ABEFF">
         <Button x:Name="BackB" Content="Назад" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
                 Width="100" Height="20" Margin="15" Click="BackB_Click" />
@@ -14,14 +14,20 @@
                 Width="100" Height="30" Margin="0,0,25,16" Click="AddB_Click" FontSize="14"/>
         <!-- ComboBox для выбора волонтера -->
         <ComboBox Name="VolonterCB" HorizontalAlignment="Left" VerticalAlignment="Top" 
-                 Margin="250,150,0,0" Width="300" Height="30" FontSize="14" />
+                 Margin="177,105,0,0" Width="300" Height="30" FontSize="14" />
         <!-- ComboBox для выбора мероприятия -->
-        <ComboBox Name="EventCB" HorizontalAlignment="Center" VerticalAlignment="Top" 
-                 Margin="200,60,0,0" Width="300" Height="30" FontSize="14" />
+        <ComboBox Name="EventCB" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                 Margin="177,60,0,0" Width="300" Height="30" FontSize="14" />
         <!-- ComboBox для выбора плана -->
-        <ComboBox Name="PlaneOfEventCB" 
+        <DatePicker Name="PlaneOfEventDP" 
                   HorizontalAlignment="Left" 
-                  Margin="15,60,0,0" VerticalAlignment="Top"
-                  Width="200" Height="30" FontSize="14" SelectionChanged="PlaneOfEventCB_SelectionChanged" />
+                  Margin="177,15,0,0" VerticalAlignment="Top"
+                  Width="300" Height="30" FontSize="14" SelectedDateChanged="PlaneOfEventCB_SelectedDateChanged" />
+        <Label Content="Дата:" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" 
+               Height="30" Margin="15,15,0,0"/>
+        <Label Content="Событие:" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" 
+               Height="30" Margin="15,60,0,0"/>
+        <Label Content="Волонтер:" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" 
+               Height="30" Margin="15,105,0,0"/>
     </Grid>
 </Window>

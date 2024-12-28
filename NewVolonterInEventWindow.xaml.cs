@@ -1,6 +1,7 @@
 ﻿using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
@@ -26,19 +27,7 @@ namespace BlgFnd
         {
             InitializeComponent();
             dbConnection = new DatabaseConnection();
-            LoadPlans();
             LoadVolonter();
-        }
-
-        public class Plane
-        {
-            public int Id { get; set; }
-            public DateTime Planedate { get; set; }
-
-            public override string ToString()
-            {
-                return Convert.ToString(Planedate);  // Это отображаемое значение в ComboBox
-            }
         }
         public class Event
         {
@@ -60,64 +49,15 @@ namespace BlgFnd
                 return FullName;  // Это отображаемое значение в ComboBox
             }
         }
-
-        private void LoadPlans()
-        {
-            PlaneOfEventCB.Items.Clear();
-            try
-            {
-                using (var connection = dbConnection.GetConnection())
-                {
-                    connection.Open();
-
-                    // Запрос на получение плана на дату
-                    string query = "SELECT PlanID, PlaneDate FROM PlanOfEvent ";  //таблица PlanOdEvent с полями Planid и PlaneDate
-                    using (var command = new NpgsqlCommand(query, connection))
-                    {
-                        try
-                        {
-                            using (var reader = command.ExecuteReader())
-                            {
-                                while (reader.Read())
-                                {
-                                    var Plane = new Plane
-                                    {
-                                        Id = reader.GetInt32(0),
-                                        Planedate = reader.GetDateTime(1)
-                                    };
-
-                                    // Добавляем сотрудника в ComboBox
-                                    PlaneOfEventCB.Items.Add(Plane);
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.Message, "Ошибка при загрузке");
-                        }
-                    }
-                }
-            }
-            catch (Exception ex2)
-            {
-                MessageBox.Show(ex2.Message, "Ошибка загрузки сотрудников");
-            }
-        }
         private void LoadEvent()
         {
-            var selectedPlan = (Plane)PlaneOfEventCB.SelectedItem;
-            if (selectedPlan == null)
+            DateTime? selectedDate = PlaneOfEventDP.SelectedDate; // Получаем дату из DatePicker
+            if (selectedDate.HasValue)
             {
-                MessageBox.Show("Пожалуйста, выберите сотрудника.", "Ошибка");
-                return;
-            }
-            EventCB.Items.Clear();
-            try
-            {
+                EventCB.Items.Clear();
                 using (var connection = dbConnection.GetConnection())
                 {
                     connection.Open();
-
                     // Запрос на получение плана на дату
                     string query2 = "SELECT e.EventID, e.Name " +
                                     "FROM Event e " +
@@ -125,10 +65,10 @@ namespace BlgFnd
                                     "JOIN PlanEvent pe ON ev.EventVolonterID = pe.EventVolonterID " +
                                     "JOIN PlanOfEvent poe ON pe.PlanID = poe.PlanID " +
                                     "WHERE poe.PlaneDate = @date " + // Фильтрация по дате плана
-                                    "ORDER BY e.Name";  // Сортировка по имени события
+                                    "ORDER BY poe.PlanDate ASC";  // Сортировка по дате
                     using (var command = new NpgsqlCommand(query2, connection))
                     {
-                        command.Parameters.AddWithValue("@date",selectedPlan.Planedate);
+                        command.Parameters.AddWithValue("@date", selectedDate.Value);
                         try
                         {
                             using (var reader = command.ExecuteReader())
@@ -153,10 +93,10 @@ namespace BlgFnd
                     }
                 }
             }
-            catch (Exception ex2)
+            else
             {
-                MessageBox.Show(ex2.Message, "Ошибка загрузки сотрудников");
-            }
+                MessageBox.Show("Выберите дату для поиска.", "Предупреждение");
+            }            
         }
         private void LoadVolonter()
         {
@@ -199,6 +139,44 @@ namespace BlgFnd
                 MessageBox.Show(ex2.Message, "Ошибка загрузки сотрудников");
             }
         }
+        private void CheckVolInEvent()
+        {
+            var selectedevent = (Event)EventCB.SelectedItem;
+            var selectedvol = (Volonter)VolonterCB.SelectedItem;
+            using (var connection = dbConnection.GetConnection())
+            {
+                connection.Open();
+
+                // Запрос на получение волонтеров на мероприятии
+                string query5 = "Select * FROM EventVolonter WHERE eventId = @event AND volonterid = @vol;";
+                using (var command = new NpgsqlCommand(query5, connection))
+                {
+                    command.Parameters.AddWithValue("@event", selectedevent.Id);
+                    command.Parameters.AddWithValue("@vol", selectedvol.Id);
+                    try
+                    {
+                        using (var adapter = new NpgsqlDataAdapter(command))
+                        {
+                            DataTable dataTable = new DataTable();
+                            adapter.Fill(dataTable);
+                            if (dataTable.Rows.Count == 1)
+                            {
+                                MessageBox.Show("Волонтер уже добавлен на это мероприятие","Ошибка");
+                                command.ExecuteNonQuery();
+                            }
+                            else
+                            {
+                                AddVolInEvent();
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Ошибка");
+                    }
+                }
+            }
+        }
         private void AddVolInEvent()
         {
             var selectedevent = (Event)EventCB.SelectedItem;
@@ -234,10 +212,9 @@ namespace BlgFnd
 
         private void AddB_Click(object sender, RoutedEventArgs e)
         {
-            AddVolInEvent();
+            CheckVolInEvent();
         }
-
-        private void PlaneOfEventCB_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void PlaneOfEventCB_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             LoadEvent();
         }
